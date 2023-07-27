@@ -1,0 +1,405 @@
+#include <iostream>
+#include <stdlib.h>
+#include <dos.h>
+
+using namespace std;
+
+int n, n1;
+int inc = 0;
+int inc1 = 0;
+
+class drug
+{
+public:
+    int drugcode;
+    char drugname[20];
+    char suppliername[20];
+    char drugpub[20];
+    double drugprice;
+    int status;
+
+public:
+    void adddrug()
+    {
+        status = 1;
+        cout << "\t\t\t   YOU HAVE CHOSEN TO ADD DRUG DETAILS TO YOUR CART" << endl;
+        cout << "\t\t\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+        cout << endl;
+        inc++;
+        drugcode = 10 + inc;
+        cout << "\n\tDrug code                :" << drugcode;
+        cout << endl;
+        cout << "\n\tEnter drug name          :";
+        cin >> drugname;
+        cout << "\n\tEnter supplier name        :";
+        cin >> suppliername;
+        cout << "\n\tEnter manufacturing company :";
+        cin >> drugpub;
+        cout << "\n\tEnter drug price         :";
+        cin >> drugprice;
+    }
+
+    void dispdrug()
+    {
+        cout << drugcode << "\t\t" << drugname << "\t\t" << suppliername << "\t\t" << drugpub << "\t\t" << drugprice << endl;
+    }
+
+    void liststat()
+    {
+        if (status == 1)
+        {
+            cout << "\t\tDrugcode:" << drugcode << "\t\tStatus:Available" << endl;
+            cout << endl;
+        }
+        else
+        {
+            cout << "\t\tDrugcode:" << drugcode << "\t\tStatus:Issued" << endl;
+            cout << endl;
+        }
+    }
+};
+
+class customer
+{
+public:
+    int custid;
+    char custname[20];
+    char drugtype[20];
+    int drugcount;
+
+public:
+    void addcust()
+    {
+        cout << "\t\tYOU HAVE CHOSEN TO ADD YOUR DETAILS AS A CUSTOMER" << endl;
+        cout << "\t\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+        cout << endl;
+        cout << endl;
+        inc1++;
+        custid = 1000 + inc1;
+        cout << "\t\tCustomer Id            :" << custid;
+        cout << endl;
+        cout << endl;
+        cout << "\t\tEnter Customer Name    :";
+        cin >> custname;
+        cout << endl;
+        cout << "\t\tEnter Drug Type Name :";
+        cin >> drugtype;
+        cout << endl;
+        drugcount = 5;
+        cout << endl;
+        cout << "\t\tMaximum drugs allowed for a customer is only:" << drugcount << endl;
+        cout << endl;
+    }
+
+    void dispcust()
+    {
+        cout << "\t" << custid << "\t\t" << custname << "\t\t" << drugtype << endl;
+        cout << endl;
+    }
+};
+
+drug b[10];
+customer s[10];
+
+void displayMainMenu()
+{
+    cout << "\t\t\t********\\==========//********" << endl;
+    cout << "\t\t\tPHARMACY CUSTOMER INTERFACE" << endl;
+    cout << "\t\t\t********//==========\\********" << endl;
+    cout << endl;
+    cout << "\t\t\t\tMAIN MENU" << endl;
+    cout << "\t\t\t\t^^^^^^^^" << endl;
+    cout << endl;
+    cout << "\t\t \\*******************************************// " << endl;
+    cout << endl;
+    cout << "\t\t \t1. VIEW AVAILABLE DRUGS.        \t" << endl;
+    cout << "\t\t \t2. ADD DRUG TO CUSTOMER CART.   \t" << endl;
+    cout << "\t\t \t3. VIEW ALL DRUGS IN CART DETAILS.    \t" << endl;
+    cout << "\t\t \t4. VIEW YOUR CART.              \t" << endl;
+    cout << "\t\t \t5. PURCHASE DRUGS AND GET RECEIPT.      \t" << endl;
+    cout << "\t\t \t6. EXIT.                        \t" << endl;
+    cout << endl;
+    cout << "\t\t  //********************************************\\ " << endl;
+    cout << endl;
+    cout << "\t\t\t\tHit your choice:";
+}
+
+void viewAvailableDrugs()
+{
+    cout << "\t\t\tLIST OF ALL AVAILABLE DRUGS" << endl;
+    cout << "\t\t\t^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+    cout << endl;
+    cout << "**********************************************************************" << endl;
+    cout << "DRUGCODE\tDRUGNAME\tSUPPLIERNAME\tPUB.COMPANY\tPRICE" << endl;
+    cout << "**********************************************************************" << endl;
+    for (int i = 1; i <= n; i++)
+    {
+        b[i].dispdrug();
+    }
+    cout << endl;
+    cout << endl;
+    for (int i = 1; i <= n; i++)
+    {
+        b[i].liststat();
+    }
+    cout << endl;
+    cout << "<<-----Back To Main Menu-----" << endl;
+}
+
+void addDrugToCart()
+{
+    cout << "\t\tYOU HAVE CHOSEN TO ADD DRUG TO YOUR CART" << endl;
+    cout << "\t\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+    cout << endl;
+    int scustid;
+    cout << "Enter your customer id:";
+    cin >> scustid;
+    int custpos = -1;
+    for (int i = 1; i <= n1; i++)
+    {
+        if (scustid == s[i].custid)
+        {
+            custpos = i;
+            break;
+        }
+    }
+
+    if (custpos == -1)
+    {
+        cout << "Invalid customer id. Please try again." << endl;
+        return;
+    }
+
+    cout << "Enter drug code to add to your cart:";
+    int drugcode;
+    cin >> drugcode;
+    int drugpos = -1;
+    for (int i = 1; i <= n; i++)
+    {
+        if (drugcode == b[i].drugcode)
+        {
+            drugpos = i;
+            break;
+        }
+    }
+
+    if (drugpos == -1)
+    {
+        cout << "Invalid drug code. Please try again." << endl;
+        return;
+    }
+
+    if (b[drugpos].status == 0)
+    {
+        cout << "Sorry, the drug is already issued. Cannot add to your cart." << endl;
+    }
+    else
+    {
+        if (s[custpos].drugcount > 0)
+        {
+            s[custpos].drugcount--;
+            b[drugpos].status = 0;
+            cout << "Drug added to your cart successfully!" << endl;
+        }
+        else
+        {
+            cout << "Sorry, you cannot add more drugs to your cart. Maximum drugs allowed: 5" << endl;
+        }
+    }
+    cout << endl;
+    cout << "<<-----Back To Main Menu-----" << endl;
+}
+
+void viewAllCartDetails()
+{
+    cout << "\t\tYOUR DETAILS ARE" << endl;
+    cout << "\t\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+    cout << endl;
+    cout << "**********************************************************************" << endl;
+    cout << "CUSTOMER ID\tCUSTOMER NAME\tDRUG TYPE\tDRUGS LEFT" << endl;
+    cout << "**********************************************************************" << endl;
+
+    for (int i = 1; i <= n1; i++)
+    {
+        cout << s[i].custid << "\t\t" << s[i].custname << "\t\t" << s[i].drugtype << "\t\t" << s[i].drugcount << endl;
+    }
+    cout << endl;
+    cout << "<<-----Back To Main Menu-----" << endl;
+}
+
+void viewCustomerCart()
+{
+    cout << "\t\tVIEW YOUR CART" << endl;
+    cout << "\t\t^^^^^^^^^^^^^^^^^^^^^^" << endl;
+    cout << endl;
+    int scustid;
+    cout << "Enter customer id to view their cart:";
+    cin >> scustid;
+    for (int i = 1; i <= n1; i++)
+    {
+        if (scustid == s[i].custid)
+        {
+            cout << endl;
+            cout << "Customer found!!" << endl;
+            cout << endl;
+            cout << "YOUR CART DETAILS ARE..." << endl;
+            cout << endl;
+            cout << "Customer name             :" << s[i].custname << endl;
+            cout << "Department name          :" << s[i].drugtype << endl;
+            cout << "Drugs left in the cart   :" << s[i].drugcount << endl;
+            cout << endl;
+            break;
+        }
+    }
+    cout << endl;
+    cout << "<<-----Back To Main Menu-----" << endl;
+}
+
+void generateReceipt(customer c)
+{
+    cout << "\t\tGENERATING RECEIPT" << endl;
+    cout << "\t\t^^^^^^^^^^^^^^^^^^" << endl;
+    cout << endl;
+    cout << "Customer ID: " << c.custid << endl;
+    cout << "Customer Name: " << c.custname << endl;
+    cout << "Department Name: " << c.drugtype << endl;
+    cout << endl;
+    cout << "Purchased Drugs:" << endl;
+    cout << "----------------------" << endl;
+
+    for (int i = 1; i <= n; i++)
+    {
+        if (b[i].status == 0)
+        {
+            cout << b[i].drugname << "\t\t" << b[i].drugprice << endl;
+        }
+    }
+
+    cout << "----------------------" << endl;
+    cout << "Total amount to pay: ";
+
+    double totalAmount = 0;
+    for (int i = 1; i <= n; i++)
+    {
+        if (b[i].status == 0)
+        {
+            totalAmount += b[i].drugprice;
+        }
+    }
+
+    cout << totalAmount << endl;
+    cout << endl;
+    cout << "\t<<-----Back To Main Menu-----" << endl;
+}
+
+void issueDrug()
+{
+    cout << "\t\tYOU HAVE CHOSEN TO PURCHASE A DRUG" << endl;
+    cout << "\t\t^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl;
+    cout << endl;
+    int icustid, icustpos, idrugcode, idrugpos;
+
+    cout << "Enter customer id:";
+    cin >> icustid;
+    for (int i = 1; i <= n1; i++)
+    {
+        if (icustid == s[i].custid)
+        {
+            icustpos = i;
+            break;
+        }
+    }
+
+    cout << "Enter drug code to purchase:";
+    cin >> idrugcode;
+    for (int i = 1; i <= n; i++)
+    {
+        if (idrugcode == b[i].drugcode)
+        {
+            idrugpos = i;
+            break;
+        }
+    }
+
+    if (s[icustpos].drugcount != 0 && b[idrugpos].status == 100)
+    {
+        s[icustpos].drugcount--;
+        b[idrugpos].status = 0;
+
+        cout << "Date of issue" << endl;
+        cout << "~~~~~~~~~~~~~" << endl;
+        cout << "This drug is now issued...." << endl;
+        cout << endl;
+        cout << "Drugs allowed now: " << s[icustpos].drugcount << endl;
+        cout << endl;
+        cout << "Customer Id\t Customer Name\t DrugCode" << endl;
+        cout << "----------\t ------------\t --------" << endl;
+        cout << " " << s[icustpos].custid << "\t\t " << s[icustpos].custname << "\t\t " << b[idrugpos].drugcode << endl;
+
+        // Generate the receipt for the customer
+        generateReceipt(s[icustpos]);
+    }
+    else if (s[icustpos].drugcount == 0)
+    {
+        cout << "Sorry! You cannot take more than five drugs." << endl;
+    }
+    else
+    {
+        cout << "Sorry! Drug already taken." << endl;
+    }
+
+    cout << endl;
+    cout << "<<-----Back To Main Menu-----" << endl;
+}
+
+int main()
+{
+    int ch;
+
+    cout << "Enter number of drugs you would like to purchase: ";
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+    {
+        b[i].adddrug();
+    }
+
+    cout << "Enter number one to continue: ";
+    cin >> n1;
+    
+        s[1].addcust();
+    
+
+    do
+    {
+        displayMainMenu();
+        cin >> ch;
+
+        switch (ch)
+        {
+        case 1:
+            viewAvailableDrugs();
+            break;
+        case 2:
+            addDrugToCart();
+            break;
+        case 3:
+            viewAllCartDetails();
+            break;
+        case 4:
+            viewCustomerCart();
+            break;
+        case 5:
+            issueDrug();
+            break;
+        case 6:
+            cout << "Exiting..." << endl;
+            exit(0);
+        default:
+            cout << "Invalid choice! Please try again." << endl;
+            break;
+        }
+
+    } while (ch != 6);
+
+    return 0;
+}
